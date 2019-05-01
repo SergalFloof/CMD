@@ -1,0 +1,721 @@
+
+<!-- You have to open this file using a web browser! -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Custom Music Discs - Disc File Generator</title>
+    </head>
+    <body>
+		Welcome to the Disc File Generator v1.2!
+		<script language='javascript'>
+			var crafts = new Array();
+			var drops = new Array();
+			var chests = new Array();
+			function updateCrafts()
+			{
+				var allCrafts = '';
+				for(var i=0; i<crafts.length; i++)
+				{
+					if(i == 0)
+						allCrafts += '<ul style="line-height: 10px; list-style-type:square;">';
+					else
+						allCrafts +='<br/>';
+					allCrafts += '<li>Craft '+(i+1)+': ';
+					var stillEmpty = true;
+					for(var j=0; j<9; j++)
+					{
+						if(crafts[i][j] != '')
+						{
+							if(stillEmpty)
+								stillEmpty = false;
+							else
+								allCrafts += ', ';
+							allCrafts += crafts[i][j];
+						}
+					}
+					allCrafts += '&nbsp;&nbsp;&nbsp;<button onclick="removeCraft('+i+');">remove</button></li>';
+				}
+				if(allCrafts == '')
+					allCrafts = 'No crafts configured.';
+				else
+					allCrafts += '</ul>';
+				document.getElementById('crafts').innerHTML = allCrafts;
+			}
+			function removeCraft(id)
+			{
+				if(window.confirm('Are you sure you want to remove this craft?'))
+				{
+					for(var i=id; i<crafts.length-1; i++)
+						crafts[i] = crafts[i+1];
+					crafts.length--;
+					updateCrafts();
+				}
+			}
+			function addCraft()
+			{
+				var newCraft = new Object();
+				var craftEmpty = true;
+				for(var i=0; i<9; i++)
+				{
+					var itemField = document.getElementById('craft'+i).value;
+					var metadataField = document.getElementById('metadata'+i).value;
+					while(itemField.length != 0 && itemField.charAt(itemField.length-1) == ' ')
+						itemField = itemField.substring(0, itemField.length-1);
+					while(metadataField.length != 0 && metadataField.charAt(metadataField.length-1) == ' ')
+						metadataField = metadataField.substring(0, metadataField.length-1);
+					if(metadataField != '' && (metadataField.indexOf('.') != -1 || metadataField.indexOf(',') != -1 || isNaN(metadataField)))
+					{
+						alert('"'+metadataField+'" is not a valid number!');
+						return;
+					}
+					if(itemField != '' && metadataField != '')
+						itemField += ':'+metadataField;
+					if(itemField != '')
+						craftEmpty = false;
+					newCraft[i] = itemField;
+				}
+				if(craftEmpty)
+					alert('You cannot add an empty craft!');
+				else
+				{
+					crafts[crafts.length] = newCraft;
+					updateCrafts();
+				}
+				for(var i=0; i<9; i++)
+				{
+					document.getElementById('craft'+i).value = '';
+					document.getElementById('metadata'+i).value = '';
+				}
+			}
+			function updateDrops()
+			{
+				var allDrops = '';
+				for(var i=0; i<drops.length; i++)
+				{
+					if(i == 0)
+						allDrops += '<ul style="line-height: 10px; list-style-type:square;">';
+					else
+						allDrops += '<br/>';
+					allDrops += '<li>Drop '+(i+1)+': '+drops[i][0]+' ('+drops[i][1]+'%)&nbsp;&nbsp;&nbsp;<button onclick="removeDrop('+i
+					+');">remove</button></li>';
+				}
+				if(allDrops == '')
+					allDrops = 'No drops configured.';
+				else
+					allDrops += '</ul>';
+				document.getElementById('drops').innerHTML = allDrops;
+			}
+			function removeDrop(id)
+			{
+				if(window.confirm('Are you sure you want to remove this drop?'))
+				{
+					for(var i=id; i<drops.length-1; i++)
+						drops[i] = drops[i+1];
+					drops.length--;
+					updateDrops();
+				}
+			}
+			function addDrop()
+			{
+				var mobField = document.getElementById('mob').value;
+				var droprateField = document.getElementById('droprate').value;
+				while(mobField.length != 0 && mobField.charAt(mobField.length-1) == ' ')
+					mobField = mobField.substring(0, mobField.length-1);
+				while(droprateField.length != 0 && droprateField.charAt(droprateField.length-1) == ' ')
+					droprateField = droprateField.substring(0, droprateField.length-1);
+				if(mobField == '')
+				{
+					alert('Creature name cannot be empty!');
+					return;
+				}
+				if(droprateField == '')
+				{
+					alert('You have to specify a drop rate!');
+					return;
+				}
+				if(droprateField.indexOf(',') != -1 || isNaN(droprateField))
+				{
+					alert('"'+droprateField+'" is not a valid number!');
+					return;
+				}
+				var newDrop = new Object();
+				newDrop[0] = mobField;
+				newDrop[1] = droprateField;
+				drops[drops.length] = newDrop;
+				updateDrops();
+				document.getElementById('mob').value = '';
+				document.getElementById('droprate').value = '';
+			}
+			function updateChests()
+			{
+				var allChests = '';
+				for(var i=0; i<chests.length; i++)
+				{
+					if(i == 0)
+						allChests += '<ul style="line-height: 10px; list-style-type:square;">';
+					else
+						allChests += '<br/>';
+					allChests += '<li>Chest generation '+(i+1)+': '+chests[i][2]+' ('+chests[i][1]+'%)&nbsp;&nbsp;&nbsp;<button onclick="removeChest('+i
+					+');">remove</button></li>';
+				}
+				if(allChests == '')
+					allChests = 'No generation in chests configured.';
+				else
+					allChests += '</ul>';
+				document.getElementById('chests').innerHTML = allChests;
+			}
+			function removeChest(id)
+			{
+				if(window.confirm('Are you sure you want to remove this chest generation?'))
+				{
+					for(var i=id; i<chests.length-1; i++)
+						chests[i] = chests[i+1];
+					chests.length--;
+					updateChests();
+				}
+			}
+			function addChest()
+			{
+				var chest = document.getElementById('chest');
+				var chestField = chest.options[chest.selectedIndex].value;
+				var chestDisplayName = chest.options[chest.selectedIndex].text;
+				var chanceField = document.getElementById('chance').value;
+				
+				while(chanceField.length != 0 && chanceField.charAt(chanceField.length-1) == ' ')
+					chanceField = chanceField.substring(0, chanceField.length-1);
+				if(chanceField == '')
+				{
+					alert('You have to specify a spawning probability!');
+					return;
+				}
+				if(chanceField.indexOf(',') != -1 || isNaN(chanceField))
+				{
+					alert('"'+chanceField+'" is not a valid number!');
+					return;
+				}
+				var newChest = new Object();
+				newChest[0] = chestField;
+				newChest[1] = chanceField;
+				newChest[2] = chestDisplayName;
+				chests[chests.length] = newChest;
+				updateChests();
+				chest.selectedIndex = 0;
+				document.getElementById('chance').value = '';
+			}
+			function generateFile()
+			{
+				var textBefore = '<hr/>Copy the following text and save it in your CMD files directory with ".txt" extension.<br/><br/><div style="background:#CCFFFF;"><code>';
+				var textFile = '';
+				for(var i=0; i<crafts.length; i++)
+				{
+					var firstItem = 8, lastItem = 0;
+					for(var j=0; j<9; j++)
+					{
+						if(crafts[i][j] != '')
+						{
+							lastItem = j;
+							if(j < firstItem)
+								firstItem = j;
+						}
+					}
+					firstItem = Math.floor(firstItem/3)*3;
+					if(lastItem - firstItem < 3)
+					{
+						while(crafts[i][firstItem] == '')
+							firstItem++;
+						while(crafts[i][lastItem] == '')
+							lastItem--;
+					}
+					textFile += '<br/>craft_start';
+					for(var j=firstItem; j<=lastItem; j++)
+						textFile += '<br/>'+crafts[i][j];
+					textFile += '<br/>craft_end';
+				}
+				for(var i=0; i<drops.length; i++)
+					textFile += '<br/>drops:'+drops[i][0]+':'+drops[i][1];
+				for(var i=0; i<chests.length; i++)
+					textFile += '<br/>dungeons:'+chests[i][0]+':'+chests[i][1];
+					
+				if(textFile == '')
+				{
+					document.getElementById('textfile').innerHTML = '<hr/>Could not generate a text file: nothing configured!';
+				}
+				else
+				{
+					textFile += '</code></div>';
+					document.getElementById('textfile').innerHTML = textBefore + textFile.substring(5);
+				}
+				window.scrollTo(0, document.getElementById('textfile').offsetTop);
+			}
+		</script>
+		<h2>Crafts</h2>
+		<div id='crafts'>No crafts configured.</div>
+		<p>The table below represents a crafting grid. To add a craft, fill in the fields and click the button. Autocompletion is enabled to help you find items names!<br/>
+		If you don't want any item for a crafting slot, leave the "Item" field blank.<br/>
+		If you don't want any specific metadata for a crafting slot, leave the "Metadata" field blank.</p>
+		<table style='border-collapse:collapse; width:500px; height:400px;'>
+			<tr>
+				<th></th>
+				<th style='border: 1px solid black;'>Column 1</th>
+				<th style='border: 1px solid black;'>Column 2</th>
+				<th style='border: 1px solid black;'>Column 3</th>
+			</tr>
+			<tr>
+				<th style='border: 1px solid black; width:80px'>Row 1</th>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft0' style='width:120px;'><br/>Metadata: <input type='text' id='metadata0' style='width:80px;'></td>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft1' style='width:120px;'><br/>Metadata: <input type='text' id='metadata1' style='width:80px;'></td>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft2' style='width:120px;'><br/>Metadata: <input type='text' id='metadata2' style='width:80px;'></td>
+			</tr>
+			<tr>
+				<th style='border: 1px solid black;'>Row 2</th>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft3' style='width:120px;'><br/>Metadata: <input type='text' id='metadata3' style='width:80px;'></td>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft4' style='width:120px;'><br/>Metadata: <input type='text' id='metadata4' style='width:80px;'></td>
+				<td style='border: 1px solid black;'>Item: 
+				<button onclick="addCraft();" style='position:absolute; left:550px; width:160px;'><h3>Add craft!</h3></button>
+				<input list='items' id='craft5' style='width:120px;'><br/>Metadata: <input type='text' id='metadata5' style='width:80px;'></td>
+				
+			</tr>
+			<tr>
+				<th style='border: 1px solid black;'>Row 3</th>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft6' style='width:120px;'><br/>Metadata: <input type='text' id='metadata6' style='width:80px;'></td>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft7' style='width:120px;'><br/>Metadata: <input type='text' id='metadata7' style='width:80px;'></td>
+				<td style='border: 1px solid black;'>Item: <input list='items' id='craft8' style='width:120px;'><br/>Metadata: <input type='text' id='metadata8' style='width:80px;'></td>
+			</tr>
+		</table>
+		
+		<h2>Drops</h2>
+		<div id='drops'>No drops configured.</div>
+		<p>To make your disc droppable by a creature, fill in the fields and click the button.</p>
+		<p style='line-height:30px;'><button onclick="addDrop();" style='position:absolute; left:280px; width:160px;'><h3>Add drop!</h3></button>
+		Creature: <input list='mobs' id='mob' style='width:120px;'><br/>
+		Drop rate: <input type='text' id='droprate' style='width:50px;'> %</p>
+		<h2>Dungeon chests</h2>
+		<div id='chests'>No generation in chests configured.</div>
+		<p>To make your disc generate in dungeon chests, fill in the fields and click the button.</p>
+		<p style='line-height:30px;'><button onclick="addChest();" style='position:absolute; left:360px; width:160px;'><h3>Add generation!</h3></button>
+		Dungeon chest:
+		<select id='chest'>
+		  <option value='simple_dungeon' selected>Classic dungeon chest</option>
+		  <option value='spawn_bonus_chest'>Bonus chest</option>
+		  <option value='village_blacksmith'>Village blacksmith chest</option>
+		  <option value='abandoned_mineshaft'>Mineshaft chest</option>
+		  <option value='desert_pyramid'>Desert pyramid chest</option>
+		  <option value='jungle_temple'>Jungle temple chest</option>
+		  <option value='stronghold_corridor'>Stronghold corridor chest</option>
+		  <option value='stronghold_library'>Stronghold library chest</option>
+		  <option value='stronghold_crossing'>Stronghold crossing chest</option>
+		  <option value='nether_bridge'>Nether fortress chest</option>
+		  <option value='end_city_treasure'>End city chest</option>
+		  <option value='igloo_chest'>Igloo basement chest</option>
+		</select><br/>
+		Generation chance: <input type='text' id='chance' style='width:50px;'> %</p>
+		<h2>Generate text file</h2>
+		<p>Once you have configured everything, click the button to generate your text file.
+		&nbsp;&nbsp;<button onclick="generateFile();" style='width:130px;'><h3>Generate!</h3></button></p>
+		<div id='textfile'></div>
+    </body>
+</html>
+
+<datalist id='mobs'>
+<option value='Creeper'>
+<option value='Skeleton'>
+<option value='Spider'>
+<option value='Giant'>
+<option value='Zombie'>
+<option value='Slime'>
+<option value='Ghast'>
+<option value='PigZombie'>
+<option value='Enderman'>
+<option value='CaveSpider'>
+<option value='Silverfish'>
+<option value='Blaze'>
+<option value='LavaSlime'>
+<option value='EnderDragon'>
+<option value='WitherBoss'>
+<option value='Witch'>
+<option value='Endermite'>
+<option value='Bat'>
+<option value='Pig'>
+<option value='Sheep'>
+<option value='Cow'>
+<option value='Chicken'>
+<option value='Squid'>
+<option value='Wolf'>
+<option value='MushroomCow'>
+<option value='SnowMan'>
+<option value='Ozelot'>
+<option value='VillagerGolem'>
+<option value='EntityHorse'>
+<option value='Villager'>
+<option value='Guardian'>
+<option value='Rabbit'>
+<option value='Shulker'>
+</datalist>
+
+<datalist id='items'>
+<option value='stone'>
+<option value='grass'>
+<option value='dirt'>
+<option value='cobblestone'>
+<option value='planks'>
+<option value='sapling'>
+<option value='bedrock'>
+<option value='sand'>
+<option value='gravel'>
+<option value='gold_ore'>
+<option value='iron_ore'>
+<option value='coal_ore'>
+<option value='log'>
+<option value='leaves'>
+<option value='sponge'>
+<option value='glass'>
+<option value='lapis_ore'>
+<option value='lapis_block'>
+<option value='dispenser'>
+<option value='sandstone'>
+<option value='noteblock'>
+<option value='golden_rail'>
+<option value='detector_rail'>
+<option value='sticky_piston'>
+<option value='web'>
+<option value='tallgrass'>
+<option value='deadbush'>
+<option value='piston'>
+<option value='wool'>
+<option value='yellow_flower'>
+<option value='red_flower'>
+<option value='brown_mushroom'>
+<option value='red_mushroom'>
+<option value='gold_block'>
+<option value='iron_block'>
+<option value='double_stone_slab'>
+<option value='stone_slab'>
+<option value='brick_block'>
+<option value='tnt'>
+<option value='bookshelf'>
+<option value='mossy_cobblestone'>
+<option value='obsidian'>
+<option value='torch'>
+<option value='fire'>
+<option value='mob_spawner'>
+<option value='oak_stairs'>
+<option value='chest'>
+<option value='diamond_ore'>
+<option value='diamond_block'>
+<option value='crafting_table'>
+<option value='farmland'>
+<option value='furnace'>
+<option value='lit_furnace'>
+<option value='ladder'>
+<option value='rail'>
+<option value='stone_stairs'>
+<option value='lever'>
+<option value='stone_pressure_plate'>
+<option value='wooden_pressure_plate'>
+<option value='redstone_ore'>
+<option value='redstone_torch'>
+<option value='stone_button'>
+<option value='snow_layer'>
+<option value='ice'>
+<option value='snow'>
+<option value='cactus'>
+<option value='clay'>
+<option value='jukebox'>
+<option value='fence'>
+<option value='pumpkin'>
+<option value='netherrack'>
+<option value='soul_sand'>
+<option value='glowstone'>
+<option value='portal'>
+<option value='lit_pumpkin'>
+<option value='stained_glass'>
+<option value='trapdoor'>
+<option value='monster_egg'>
+<option value='stonebrick'>
+<option value='brown_mushroom_block'>
+<option value='red_mushroom_block'>
+<option value='iron_bars'>
+<option value='glass_pane'>
+<option value='melon_block'>
+<option value='vine'>
+<option value='fence_gate'>
+<option value='brick_stairs'>
+<option value='stone_brick_stairs'>
+<option value='mycelium'>
+<option value='waterlily'>
+<option value='nether_brick'>
+<option value='nether_brick_fence'>
+<option value='nether_brick_stairs'>
+<option value='enchanting_table'>
+<option value='end_portal'>
+<option value='end_portal_frame'>
+<option value='end_stone'>
+<option value='dragon_egg'>
+<option value='redstone_lamp'>
+<option value='double_wooden_slab'>
+<option value='wooden_slab'>
+<option value='cocoa'>
+<option value='sandstone_stairs'>
+<option value='emerald_ore'>
+<option value='ender_chest'>
+<option value='tripwire_hook'>
+<option value='emerald_block'>
+<option value='spruce_stairs'>
+<option value='birch_stairs'>
+<option value='jungle_stairs'>
+<option value='command_block'>
+<option value='beacon'>
+<option value='cobblestone_wall'>
+<option value='wooden_button'>
+<option value='anvil'>
+<option value='trapped_chest'>
+<option value='light_weighted_pressure_plate'>
+<option value='heavy_weighted_pressure_plate'>
+<option value='daylight_detector'>
+<option value='redstone_block'>
+<option value='quartz_ore'>
+<option value='hopper'>
+<option value='quartz_block'>
+<option value='quartz_stairs'>
+<option value='activator_rail'>
+<option value='dropper'>
+<option value='stained_hardened_clay'>
+<option value='stained_glass_pane'>
+<option value='leaves2'>
+<option value='log2'>
+<option value='acacia_stairs'>
+<option value='dark_oak_stairs'>
+<option value='hay_block'>
+<option value='carpet'>
+<option value='hardened_clay'>
+<option value='coal_block'>
+<option value='packed_ice'>
+<option value='double_plant'>
+<option value='iron_shovel'>
+<option value='iron_pickaxe'>
+<option value='iron_axe'>
+<option value='flint_and_steel'>
+<option value='apple'>
+<option value='bow'>
+<option value='arrow'>
+<option value='coal'>
+<option value='diamond'>
+<option value='iron_ingot'>
+<option value='gold_ingot'>
+<option value='iron_sword'>
+<option value='wooden_sword'>
+<option value='wooden_shovel'>
+<option value='wooden_pickaxe'>
+<option value='wooden_axe'>
+<option value='stone_sword'>
+<option value='stone_shovel'>
+<option value='stone_pickaxe'>
+<option value='stone_axe'>
+<option value='diamond_sword'>
+<option value='diamond_shovel'>
+<option value='diamond_pickaxe'>
+<option value='diamond_axe'>
+<option value='stick'>
+<option value='bowl'>
+<option value='mushroom_stew'>
+<option value='golden_sword'>
+<option value='golden_shovel'>
+<option value='golden_pickaxe'>
+<option value='golden_axe'>
+<option value='string'>
+<option value='feather'>
+<option value='gunpowder'>
+<option value='wooden_hoe'>
+<option value='stone_hoe'>
+<option value='iron_hoe'>
+<option value='diamond_hoe'>
+<option value='golden_hoe'>
+<option value='wheat_seeds'>
+<option value='wheat'>
+<option value='bread'>
+<option value='leather_helmet'>
+<option value='leather_chestplate'>
+<option value='leather_leggings'>
+<option value='leather_boots'>
+<option value='chainmail_helmet'>
+<option value='chainmail_chestplate'>
+<option value='chainmail_leggings'>
+<option value='chainmail_boots'>
+<option value='iron_helmet'>
+<option value='iron_chestplate'>
+<option value='iron_leggings'>
+<option value='iron_boots'>
+<option value='diamond_helmet'>
+<option value='diamond_chestplate'>
+<option value='diamond_leggings'>
+<option value='diamond_boots'>
+<option value='golden_helmet'>
+<option value='golden_chestplate'>
+<option value='golden_leggings'>
+<option value='golden_boots'>
+<option value='flint'>
+<option value='porkchop'>
+<option value='cooked_porkchop'>
+<option value='painting'>
+<option value='golden_apple'>
+<option value='sign'>
+<option value='wooden_door'>
+<option value='bucket'>
+<option value='water_bucket'>
+<option value='lava_bucket'>
+<option value='minecart'>
+<option value='saddle'>
+<option value='iron_door'>
+<option value='redstone'>
+<option value='snowball'>
+<option value='boat'>
+<option value='leather'>
+<option value='milk_bucket'>
+<option value='brick'>
+<option value='clay_ball'>
+<option value='reeds'>
+<option value='paper'>
+<option value='book'>
+<option value='slimeball'>
+<option value='chest_minecart'>
+<option value='furnace_minecart'>
+<option value='egg'>
+<option value='compass'>
+<option value='fishing_rod'>
+<option value='clock'>
+<option value='glowstone_dust'>
+<option value='fish'>
+<option value='cooked_fish'>
+<option value='dye'>
+<option value='bone'>
+<option value='sugar'>
+<option value='cake'>
+<option value='bed'>
+<option value='repeater'>
+<option value='cookie'>
+<option value='filled_map'>
+<option value='shears'>
+<option value='melon'>
+<option value='pumpkin_seeds'>
+<option value='melon_seeds'>
+<option value='beef'>
+<option value='cooked_beef'>
+<option value='chicken'>
+<option value='cooked_chicken'>
+<option value='rotten_flesh'>
+<option value='ender_pearl'>
+<option value='blaze_rod'>
+<option value='ghast_tear'>
+<option value='gold_nugget'>
+<option value='nether_wart'>
+<option value='potion'>
+<option value='glass_bottle'>
+<option value='spider_eye'>
+<option value='fermented_spider_eye'>
+<option value='blaze_powder'>
+<option value='magma_cream'>
+<option value='brewing_stand'>
+<option value='cauldron'>
+<option value='ender_eye'>
+<option value='speckled_melon'>
+<option value='experience_bottle'>
+<option value='fire_charge'>
+<option value='writable_book'>
+<option value='written_book'>
+<option value='emerald'>
+<option value='item_frame'>
+<option value='flower_pot'>
+<option value='carrot'>
+<option value='potato'>
+<option value='baked_potato'>
+<option value='poisonous_potato'>
+<option value='map'>
+<option value='golden_carrot'>
+<option value='skull'>
+<option value='carrot_on_a_stick'>
+<option value='nether_star'>
+<option value='pumpkin_pie'>
+<option value='fireworks'>
+<option value='firework_charge'>
+<option value='enchanted_book'>
+<option value='comparator'>
+<option value='netherbrick'>
+<option value='quartz'>
+<option value='tnt_minecart'>
+<option value='hopper_minecart'>
+<option value='iron_horse_armor'>
+<option value='golden_horse_armor'>
+<option value='diamond_horse_armor'>
+<option value='lead'>
+<option value='name_tag'>
+<option value='command_block_minecart'>
+<option value='record_13'>
+<option value='record_cat'>
+<option value='record_blocks'>
+<option value='record_chirp'>
+<option value='record_far'>
+<option value='record_mall'>
+<option value='record_mellohi'>
+<option value='record_stal'>
+<option value='record_strad'>
+<option value='record_ward'>
+<option value='record_11'>
+<option value='record_wait'>
+<option value='slime'>
+<option value='iron_trapdoor'>
+<option value='prismarine'>
+<option value='sea_lantern'>
+<option value='red_sandstone'>
+<option value='red_sandstone_stairs'>
+<option value='double_stone_slab2'>
+<option value='stone_slab2'>
+<option value='spruce_fence_gate'>
+<option value='birch_fence_gate'>
+<option value='jungle_fence_gate'>
+<option value='dark_oak_fence_gate'>
+<option value='acacia_fence_gate'>
+<option value='spruce_fence'>
+<option value='birch_fence'>
+<option value='jungle_fence'>
+<option value='dark_oak_fence'>
+<option value='acacia_fence'>
+<option value='prismarine_shard'>
+<option value='prismarine_crystals'>
+<option value='rabbit'>
+<option value='cooked_rabbit'>
+<option value='rabbit_stew'>
+<option value='rabbit_foot'>
+<option value='rabbit_hide'>
+<option value='armor_stand'>
+<option value='mutton'>
+<option value='cooked_mutton'>
+<option value='banner'>
+<option value='spruce_door'>
+<option value='birch_door'>
+<option value='jungle_door'>
+<option value='acacia_door'>
+<option value='dark_oak_door'>
+<option value='chorus_flower'>
+<option value='chorus_plant'>
+<option value='end_gateway'>
+<option value='end_rod'>
+<option value='end_bricks'>
+<option value='frosted_ice'>
+<option value='grass_path'>
+<option value='purpur_block'>
+<option value='purpur_pillar'>
+<option value='structure_block'>
+<option value='beetroot'>
+<option value='beetroot_soup'>
+<option value='beetroot_seeds'>
+<option value='chorus_fruit'>
+<option value='dragon_breath'>
+<option value='elytra'>
+<option value='end_crystal'>
+<option value='lingering_potion'>
+<option value='chorus_fruit_popped'>
+<option value='shield'>
+<option value='spectral_arrow'>
+<option value='tipped_arrow'>
+</datalist>
