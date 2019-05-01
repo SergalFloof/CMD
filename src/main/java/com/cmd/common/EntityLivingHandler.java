@@ -1,7 +1,5 @@
  package com.cmd.common;
  
- import java.util.ArrayList;
- import net.minecraft.entity.EntityLivingBase;
  import net.minecraftforge.event.entity.living.LivingDeathEvent;
  
  public class EntityLivingHandler

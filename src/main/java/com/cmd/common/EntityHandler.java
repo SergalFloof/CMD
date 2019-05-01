@@ -2,12 +2,12 @@
  
  import java.util.List;
  import java.util.Random;
- import net.minecraft.entity.item.EntityItem;
+
+import net.minecraft.entity.item.EntityItem;
  import net.minecraft.entity.monster.EntityCreeper;
  import net.minecraft.init.Items;
  import net.minecraft.item.Item;
  import net.minecraft.item.ItemStack;
- import net.minecraft.world.World;
  import net.minecraftforge.event.entity.EntityJoinWorldEvent;
  import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  
@@ -51,7 +51,8 @@
      {
  
  
-       List list = event.getWorld().getEntitiesWithinAABB(EntityCreeper.class, event.getEntity().getEntityBoundingBox().grow(2.0D, 2.0D, 2.0D));
+       @SuppressWarnings("rawtypes")
+	List list = event.getWorld().getEntitiesWithinAABB(EntityCreeper.class, event.getEntity().getEntityBoundingBox().grow(2.0D, 2.0D, 2.0D));
        
        boolean ok = false;
        for (int i = 0; (i < list.size()) && (!ok); i++)

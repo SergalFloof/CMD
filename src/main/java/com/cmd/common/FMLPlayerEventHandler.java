@@ -2,7 +2,8 @@
  
  import java.util.ArrayList;
  import java.util.List;
- import net.minecraft.entity.player.EntityPlayerMP;
+
+import net.minecraft.entity.player.EntityPlayerMP;
  import net.minecraftforge.fml.common.eventhandler.EventPriority;
  import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;

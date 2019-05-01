@@ -2,15 +2,15 @@
  
  import java.util.ArrayList;
  import java.util.List;
- import net.minecraft.creativetab.CreativeTabs;
+
+import net.minecraft.creativetab.CreativeTabs;
  import net.minecraft.entity.player.EntityPlayer;
  import net.minecraft.item.ItemRecord;
  import net.minecraft.item.ItemStack;
  import net.minecraft.util.ResourceLocation;
  import net.minecraft.util.SoundEvent;
  import net.minecraft.util.text.translation.I18n;
- import net.minecraftforge.fml.common.registry.GameRegistry;
- import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
  
  public class ItemCustomRecord
@@ -26,7 +26,7 @@
      setCreativeTab(CreativeTabs.MISC);
      this.displayName = name;
      setUnlocalizedName(name);
-     GameRegistry.register(setRegistryName("cmd", name));
+//     GameRegistry.register(setRegistryName("cmd", name));
      CMD.itemTextures.add(new CMD.ItemTextureInfo(this, name));
    }
    
@@ -67,16 +67,16 @@
    public void func_77624_a(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
    {
      if (!CMD.disc_name_is_song_name) {
-       par3List.add(func_150927_i());
+       par3List.add(getRecordNameLocal());
      }
    }
    
    @SideOnly(Side.CLIENT)
-   public String func_150927_i() {
+   public String getRecordNameLocal() {
      return this.displayName;
    }
    
-   public String func_77653_i(ItemStack par1ItemStack)
+   public String getItemStackDisplayName(ItemStack par1ItemStack)
    {
      if (CMD.disc_name_is_song_name) {
        return this.displayName;

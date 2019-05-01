@@ -3,9 +3,9 @@
  import io.netty.buffer.ByteBuf;
  import java.util.ArrayList;
  import java.util.List;
- import net.minecraft.item.Item;
+
+import net.minecraft.item.Item;
  import net.minecraft.util.ResourceLocation;
- import net.minecraft.util.registry.RegistryNamespaced;
  import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
  import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
  import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
