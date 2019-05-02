@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
      super("cmd:" + encodeName(name), new SoundEvent(new ResourceLocation("records.cmd:" + encodeName(name))));
      setCreativeTab(CreativeTabs.MISC);
      this.displayName = name;
+     setRegistryName(name);
      setUnlocalizedName(name);
 //     GameRegistry.register(setRegistryName("cmd", name));
      CMD.itemTextures.add(new CMD.ItemTextureInfo(this, name));
